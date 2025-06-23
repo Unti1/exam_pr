@@ -2,6 +2,8 @@ import pytest
 import sys
 import os
 from datetime import datetime, timedelta
+import tempfile
+from database.database_manager import DatabaseManager
 
 # Добавляем путь к модулям проекта
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -19,7 +21,13 @@ class TestBookController:
     
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        self.controller = BookController()
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
+        self.db_manager = DatabaseManager(self.temp_db.name)
+        self.controller = BookController(self.db_manager)
+    
+    def teardown_method(self):
+        self.db_manager.close()
+        os.unlink(self.temp_db.name)
     
     def test_add_book(self):
         """Тест добавления книги"""
@@ -143,7 +151,13 @@ class TestReaderController:
     
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        self.controller = ReaderController()
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
+        self.db_manager = DatabaseManager(self.temp_db.name)
+        self.controller = ReaderController(self.db_manager)
+    
+    def teardown_method(self):
+        self.db_manager.close()
+        os.unlink(self.temp_db.name)
     
     def test_add_reader(self):
         """Тест добавления читателя"""
@@ -236,9 +250,15 @@ class TestLoanController:
     
     def setup_method(self):
         """Настройка перед каждым тестом"""
-        self.controller = LoanController()
-        self.book_controller = BookController()
-        self.reader_controller = ReaderController()
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
+        self.db_manager = DatabaseManager(self.temp_db.name)
+        self.book_controller = BookController(self.db_manager)
+        self.reader_controller = ReaderController(self.db_manager)
+        self.controller = LoanController(self.db_manager)
+    
+    def teardown_method(self):
+        self.db_manager.close()
+        os.unlink(self.temp_db.name)
     
     def test_create_loan(self):
         """Тест создания выдачи"""
