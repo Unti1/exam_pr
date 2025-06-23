@@ -213,6 +213,30 @@ library_system/
 - Тестирование SQL операций
 - Тестирование целостности данных
 
+## Важно для тестирования и архитектуры
+
+- Все контроллеры (`BookController`, `ReaderController`, `LoanController`) должны принимать объект `DatabaseManager` в качестве обязательного аргумента конструктора.
+- Для тестирования используйте временную базу данных (например, через `tempfile.NamedTemporaryFile` или SQLite `:memory:`).
+- После каждого теста обязательно закрывайте соединение с базой (`db_manager.close()`) и удаляйте временный файл (если не `:memory:`).
+- Пример инициализации для теста:
+    ```python
+    import tempfile
+    import os
+    from database.database_manager import DatabaseManager
+    from controllers.book_controller import BookController
+
+    class TestBookController:
+        def setup_method(self):
+            self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
+            self.db_manager = DatabaseManager(self.temp_db.name)
+            self.controller = BookController(self.db_manager)
+
+        def teardown_method(self):
+            self.db_manager.close()
+            os.unlink(self.temp_db.name)
+    ```
+- Для ускорения тестов можно использовать `DatabaseManager(':memory:')`, но тогда данные не сохраняются между тестами.
+
 ## Требования к реализации
 
 1. **Архитектура MVC**: Строгое разделение на Model, View, Controller
