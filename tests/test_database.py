@@ -19,14 +19,14 @@ class TestDatabaseManager:
     def setup_method(self):
         """Настройка перед каждым тестом"""
         # Создаем временную базу данных для тестов
-        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
-        self.db_manager = DatabaseManager(self.temp_db.name)
+        # self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
+        self.db_manager = DatabaseManager(':memory:')
         self.db_manager.create_tables()
     
     def teardown_method(self):
         """Очистка после каждого теста"""
         self.db_manager.close()
-        os.unlink(self.temp_db.name)
+        # os.unlink(self.temp_db.name)
     
     def test_create_tables(self):
         """Тест создания таблиц"""
