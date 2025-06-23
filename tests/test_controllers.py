@@ -27,7 +27,7 @@ class TestBookController:
     
     def teardown_method(self):
         self.db_manager.close()
-        os.unlink(self.temp_db.name)
+        
     
     def test_add_book(self):
         """Тест добавления книги"""
@@ -157,7 +157,7 @@ class TestReaderController:
     
     def teardown_method(self):
         self.db_manager.close()
-        os.unlink(self.temp_db.name)
+        
     
     def test_add_reader(self):
         """Тест добавления читателя"""
@@ -258,7 +258,7 @@ class TestLoanController:
     
     def teardown_method(self):
         self.db_manager.close()
-        os.unlink(self.temp_db.name)
+        
     
     def test_create_loan(self):
         """Тест создания выдачи"""

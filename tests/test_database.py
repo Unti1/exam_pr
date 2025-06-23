@@ -26,7 +26,7 @@ class TestDatabaseManager:
     def teardown_method(self):
         """Очистка после каждого теста"""
         self.db_manager.close()
-        os.unlink(self.temp_db.name)
+        
     
     def test_create_tables(self):
         """Тест создания таблиц"""
